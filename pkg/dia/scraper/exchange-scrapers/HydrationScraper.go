@@ -18,10 +18,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	Blockchain = "Hydration"
-)
-
 type HydrationScraper struct {
 	logger       *logrus.Entry
 	pairScrapers map[string]*HydrationPairScraper // pc.ExchangePair -> pairScraperSet
@@ -65,7 +61,7 @@ func NewHydrationScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 		db:           relDB,
 		wsApi:        wsApi,
 		exchangeName: exchange.Name,
-		blockchain:   Blockchain,
+		blockchain:   "Hydration",
 		currentBlock: startBlockUint64,
 	}
 
