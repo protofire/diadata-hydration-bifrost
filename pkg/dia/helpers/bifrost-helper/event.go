@@ -1,10 +1,16 @@
 package bifrosthelper
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
+	// "github.com/centrifuge/go-substrate-rpc-client/v4/registry/retriever"
+	// "github.com/centrifuge/go-substrate-rpc-client/v4/registry/state"
+	"github.com/centrifuge/go-substrate-rpc-client/v4/scale"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
+	"github.com/diadata-org/diadata/pkg/dia/helpers/bifrost-helper/decoder"
 
 	"github.com/sirupsen/logrus"
 )
@@ -108,6 +114,36 @@ func (s *SubstrateEventHelper) ListenForSpecificBlock(blockNumber uint64, callba
 type StableSwapEvent2 struct {
 }
 
+// DecodeEvents fetches and decodes events for a specific block hash using CustomEventRecords
+// func (s *SubstrateEventHelper) DecodeEvents(blockHash types.Hash) (*[]EventSellExecuted, error) {
+// 	retriever, err := retriever.NewDefaultEventRetriever(state.NewEventProvider(s.API.RPC.State), s.API.RPC.State)
+// 	if err != nil {
+// 		log.Printf("Couldn't create event retriever: %s", err)
+// 		return nil, fmt.Errorf("failed to create event retriever: %v", err)
+// 	}
+
+// 	events, err := retriever.GetEvents(blockHash)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to retrieve events: %v", err)
+// 	}
+
+// 	log.Printf("Found %d events'%s'", len(events))
+
+// 	// Example of the events returned structure
+// 	for _, event := range events {
+// 		log.Printf("Event ID: %x \n", event.EventID)
+// 		log.Printf("Event Name: %s \n", event.Name)
+// 		log.Printf("Event Fields Count: %d \n", len(event.Fields))
+// 		for k, v := range event.Fields {
+// 			log.Printf("Field Name: %s \n", k)
+// 			log.Printf("Field Type: %v \n", reflect.TypeOf(v))
+// 			log.Printf("Field Value: %v \n", v)
+// 		}
+// 	}
+
+// 	return nil, nil
+// }
+
 // TODO: MOVE THIS TO COMMON PARACHAIN HELPER
 // DecodeEvents fetches and decodes events for a specific block hash using CustomEventRecords
 // func (s *SubstrateEventHelper) DecodeEvents(blockHash types.Hash) (*CustomEventRecords, error) {
@@ -126,10 +162,61 @@ func (s *SubstrateEventHelper) DecodeEvents(blockHash types.Hash) (*[]EventSellE
 	s.logger.Info("BlockHash: ", blockHash.Hex())
 
 	events := []EventSellExecuted{}
-	ok, err := s.API.RPC.State.GetStorage(key, &events, blockHash)
-	if err != nil || !ok {
+	// ok, err := s.API.RPC.State.GetStorage(key, &events, blockHash)
+	// if err != nil || !ok {
+	// 	s.logger.WithError(err).Error("failed to get events from block")
+	// 	return nil, fmt.Errorf("failed to get events from block: %v", err)
+	// }
+
+	rawEvent, err := s.API.RPC.State.GetStorageRaw(key, blockHash)
+	if err != nil {
 		s.logger.WithError(err).Error("failed to get events from block")
 		return nil, fmt.Errorf("failed to get events from block: %v", err)
+	}
+
+	runtimeVersion, err := s.API.RPC.State.GetRuntimeVersionLatest() // rpc chain_getRuntimeVersion
+	if err != nil {
+		return nil, fmt.Errorf("failed to get runtime version: %v", err)
+	}
+
+	var buf bytes.Buffer
+	writer := io.Writer(&buf)
+
+	encoder := scale.NewEncoder(writer)
+	err = meta.Encode(*encoder)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode metadata: %v", err)
+	}
+
+	spec := int(runtimeVersion.SpecVersion)
+	runtimeRaw := decoder.RuntimeRaw{
+		Spec: spec,
+		Raw:  decoder.BytesToHex(buf.Bytes()),
+	}
+	metadataInstant := decoder.Latest(&runtimeRaw)
+	event, err := decoder.DecodeEvent(rawEvent.Hex(), metadataInstant, spec)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode event: %v", err)
+	}
+
+	s.logger.Info("Event: ", event)
+
+	if events, ok := event.([]interface{}); ok {
+		for i, e := range events {
+			s.logger.Info("Event ", i)
+			if eventMap, ok := e.(map[string]interface{}); ok {
+				s.logger.Info("Event details:")
+				for key, value := range eventMap {
+					s.logger.Info("key: ", key)
+					s.logger.Info("value: ", value)
+				}
+			} else {
+				s.logger.Info("Event is not a map[string]interface{}")
+			}
+		}
+	} else {
+		s.logger.Info("Event is not a []interface{}")
 	}
 
 	for _, event := range events {

@@ -7,13 +7,16 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/diadata-org/diadata/pkg/dia"
 	bifrosthelper "github.com/diadata-org/diadata/pkg/dia/helpers/bifrost-helper"
 	models "github.com/diadata-org/diadata/pkg/model"
+
+	//"github.com/diadata-org/diadata/pkg/polkadot"
+
+	//polkadot "github.com/diadata-org/diadata/pkg/polkadot"
 	"github.com/diadata-org/diadata/pkg/utils"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
@@ -63,15 +66,17 @@ type BifrostScraper struct {
 //   - If the 'scrape' flag is true, the scraper starts its main scraping loop in a separate goroutine.
 func NewBifrostScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB) *BifrostScraper {
 	//todo remove this
-	refreshDelay := utils.GetTimeDurationFromIntAsMilliseconds(
-		utils.GetenvInt(strings.ToUpper(exchange.Name)+"_REFRESH_DELAY", 10000),
-	)
+	// refreshDelay := utils.GetTimeDurationFromIntAsMilliseconds(
+	// 	utils.GetenvInt(strings.ToUpper(exchange.Name)+"_REFRESH_DELAY", 10000),
+	// )
 	logger := logrus.
 		New().
 		WithContext(context.Background()).
 		WithField("context", "BifrostScraper")
 
-	wsApi, err := bifrosthelper.NewSubstrateEventHelper("wss://bifrost-polkadot.api.onfinality.io/public-ws", logger)
+	//wsApi, err := bifrosthelper.NewSubstrateEventHelper("wss://bifrost-polkadot.api.onfinality.io/public-ws", logger)
+	wsApi, err := bifrosthelper.NewSubstrateEventHelper("wss://bifrost-rpc.liebi.com/ws", logger)
+	//wsApi, err := polkadot.NewSubstrateEventHelper(logger, "wss://bifrost-polkadot.api.onfinality.io/public-ws")
 	if err != nil {
 		logrus.WithError(err).Error("Failed to create Bifrost Substrate event helper")
 		return nil
@@ -81,7 +86,7 @@ func NewBifrostScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB) 
 		shutdown:     make(chan nothing),
 		shutdownDone: make(chan nothing),
 		//todo: remove this
-		ticker:       time.NewTicker(refreshDelay),
+		//ticker:       time.NewTicker(refreshDelay),
 		chanTrades:   make(chan *dia.Trade),
 		db:           relDB,
 		wsApi:        wsApi,
@@ -154,6 +159,7 @@ func (s *BifrostScraper) mainLoop() {
 	//go s.wsApi.ListenForNewBlocks(s.processEvents)
 	s.logger.Info("Listening for new blocks")
 	go s.wsApi.ListenForSpecificBlock(5697382, s.processEvents)
+
 	//go s.wsApi.ListenForNewBlocks(s.processEvents)
 	defer s.cleanup(nil)
 
