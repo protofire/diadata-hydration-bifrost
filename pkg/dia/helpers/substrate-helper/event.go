@@ -46,35 +46,6 @@ func (s *SubstrateEventHelper) ListenForSpecificBlock(blockNumber uint64, callba
 	return nil
 }
 
-// TODO: MOVE THIS TO COMMON PARACHAIN HELPER
-// DecodeEvents fetches and decodes events for a specific block hash using CustomEventRecords
-// func (s *SubstrateEventHelper) DecodeEvents(blockHash types.Hash) (*CustomEventRecords, error) {
-
-type EventStableAssetTokenSwapped struct {
-	Phase           types.Phase     // The phase of the event (applies to all events)
-	Swapper         types.AccountID `json:"swapper"`           // Account ID of the swapper
-	PoolID          types.U32       `json:"pool_id"`           // Pool ID
-	A               types.U128      `json:"a"`                 // Arbitrary value 'a'
-	InputAsset      AssetID         `json:"input_asset"`       // Input asset (custom type bifrost_primitives:currency:CurrencyId)
-	OutputAsset     AssetID         `json:"output_asset"`      // Output asset (custom type bifrost_primitives:currency:CurrencyId)
-	InputAmount     types.U128      `json:"input_amount"`      // Input amount
-	MinOutputAmount types.U128      `json:"min_output_amount"` // Minimum output amount
-	Balances        []types.U128    `json:"balances"`          // Balances (Vec<Balance>)
-	TotalSupply     types.U128      `json:"total_supply"`      // Total supply
-	OutputAmount    types.U128      `json:"output_amount"`     // Output amount
-	Topics          []types.Hash    // Event topics (applies to all events)
-}
-
-// AssetID represents the custom bifrost_primitives:currency:CurrencyId type.
-type AssetID struct {
-	VToken2 types.U32 `json:"VToken2,omitempty"` // Token variant 2
-	Token2  types.U32 `json:"Token2,omitempty"`  // Another token variant
-}
-
-type CustomEventRecords struct {
-	StableAsset_TokenSwapped []EventStableAssetTokenSwapped
-}
-
 func (s *SubstrateEventHelper) DecodeEvents(blockHash types.Hash) ([]*parser.Event, error) {
 	r, err := retriever.NewDefaultEventRetriever(state.NewEventProvider(s.API.RPC.State), s.API.RPC.State)
 
