@@ -99,7 +99,6 @@ func (s *SubstrateEventHelper) ListenForNewBlocks(callback func([]*parser.Event)
 	if err != nil {
 		return fmt.Errorf("failed to subscribe to new heads: %v", err)
 	}
-	fmt.Println("Listening for new blocks...")
 
 	for {
 		head := <-sub.Chan()
@@ -116,8 +115,6 @@ func (s *SubstrateEventHelper) ListenForNewBlocks(callback func([]*parser.Event)
 			s.logger.Errorf("Failed to decode events: %v\n", err)
 			continue
 		}
-
-		s.logger.Info(events)
 
 		callback(events)
 	}
