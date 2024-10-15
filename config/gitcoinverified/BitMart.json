@@ -13,6 +13,12 @@
       "Address": "0x0000000000000000000000000000000000000000"
     },
     {
+      "Symbol": "AERO",
+      "Exchange": "BitMart",
+      "Blockchain": "Base",
+      "Address": "0x940181a94A35A4569E4529A3CDfB74e38FD98631"
+    },
+    {
       "Symbol": "ALPH",
       "Exchange": "BitMart",
       "Blockchain": "Alephium",
@@ -49,6 +55,12 @@
       "Address": "0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b"
     },
     {
+      "Symbol": "AZERO",
+      "Exchange": "BitMart",
+      "Blockchain": "AlephZero",
+      "Address": "0x0000000000000000000000000000000000000000"
+    },
+    {
       "Symbol": "BAL",
       "Exchange": "BitMart",
       "Blockchain": "Ethereum",
@@ -65,6 +77,12 @@
       "Exchange": "BitMart",
       "Blockchain": "BitcoinCash",
       "Address": "0x0000000000000000000000000000000000000000"
+    },
+    {
+      "Symbol": "BENJI",
+      "Exchange": "BitMart",
+      "Blockchain": "Base",
+      "Address": "0xBC45647eA894030a4E9801Ec03479739FA2485F0"
     },
     {
       "Symbol": "BEPRO",
@@ -313,6 +331,12 @@
       "Address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
     },
     {
+      "Symbol": "MIGGLES",
+      "Exchange": "BitMart",
+      "Blockchain": "Base",
+      "Address": "0xB1a03EdA10342529bBF8EB700a06C60441fEf25d"
+    },
+    {
       "Symbol": "MOG",
       "Exchange": "BitMart",
       "Blockchain": "Ethereum",
@@ -347,6 +371,12 @@
       "Exchange": "BitMart",
       "Blockchain": "Ethereum",
       "Address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933"
+    },
+    {
+      "Symbol": "POL",
+      "Exchange": "BitMart",
+      "Blockchain": "Polygon",
+      "Address": "0x0000000000000000000000000000000000001010"
     },
     {
       "Symbol": "QNT",
@@ -445,6 +475,12 @@
       "Address": "0x0000000000000000000000000000000000000000"
     },
     {
+      "Symbol": "TOSHI",
+      "Exchange": "BitMart",
+      "Blockchain": "Base",
+      "Address": "0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4"
+    },
+    {
       "Symbol": "TRUMP",
       "Exchange": "BitMart",
       "Blockchain": "Ethereum",
@@ -515,6 +551,12 @@
       "Exchange": "BitMart",
       "Blockchain": "Ethereum",
       "Address": "0xbbEE07B3e8121227AfCFe1E2B82772246226128e"
+    },
+    {
+      "Symbol": "XAI",
+      "Exchange": "BitMart",
+      "Blockchain": "Arbitrum",
+      "Address": "0x4Cb9a7AE498CEDcBb5EAe9f25736aE7d428C9D66"
     },
     {
       "Symbol": "XLM",

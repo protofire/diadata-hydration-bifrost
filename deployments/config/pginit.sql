@@ -307,6 +307,26 @@ CREATE TABLE oracleconfig (
     expired_time timestamp without time zone DEFAULT '1970-01-01 00:00:00'::timestamp without time zone
 );
 
+ALTER TABLE oracleconfig  ADD COLUMN name VARCHAR(255);
+ALTER TABLE oracleconfig  ADD COLUMN draft boolean DEFAULT true;
+ALTER TABLE oracleconfig  ADD COLUMN customer_id int ;
+ALTER TABLE oracleconfig  ADD COLUMN billable boolean DEFAULT false ;
+
+
+
+
+ALTER TABLE oracleconfig  ADD COLUMN ecosystem boolean DEFAULT false;
+
+
+
+ALTER TABLE oracleconfig
+ADD CONSTRAINT unique_customer_chainid_address 
+UNIQUE (customer_id, chainid, address);
+
+
+
+ALTER TABLE oracleconfig
+ADD CONSTRAINT unique_feeder_id UNIQUE (feeder_id);
 
 
 -- CREATE TABLE oracleconfig (
@@ -334,6 +354,8 @@ CREATE TABLE oracleconfig (
 -- ALTER TABLE oracleconfig  ADD COLUMN feedSelection TEXT ;
 -- ALTER TABLE oracleconfig  ADD COLUMN expired boolean default false ;
 -- ALTER TABLE oracleconfig  ADD COLUMN expired_time TIMESTAMP DEFAULT 'epoch'::timestamp;
+
+
 
 
 CREATE TABLE feederresource (
@@ -368,13 +390,7 @@ CREATE TABLE exchange_pairs (
 
 
 
-CREATE TABLE plans (
-    plan_id SERIAL PRIMARY KEY,
-    plan_name VARCHAR(50) NOT NULL UNIQUE,
-    plan_description TEXT,
-    plan_price NUMERIC(10, 2) NOT NULL,
-    plan_features TEXT
-);
+
 
 
 
@@ -391,16 +407,142 @@ CREATE TABLE plans (
     active BOOLEAN DEFAULT TRUE
 );
 
+
+
+ALTER TABLE customers ADD COLUMN name VARCHAR(255);
+ALTER TABLE customers ADD COLUMN payer_address text;
+
+
+
 CREATE TABLE wallet_public_keys (
     key_id SERIAL PRIMARY KEY,
     customer_id INTEGER REFERENCES customers(customer_id) ON DELETE CASCADE,
     public_key TEXT NOT NULL,
     access_level VARCHAR(50) NOT NULL DEFAULT 'read_write',
-    UNIQUE (public_key)
+    UNIQUE (public_key),
+    CONSTRAINT check_access_level CHECK (access_level IN ('read', 'read_write'))
+
 );
 
 
-INSERT INTO  "plans"("plan_id","plan_name","plan_description","plan_price","plan_features")
+
+ALTER TABLE wallet_public_keys ADD COLUMN username VARCHAR(255) UNIQUE;
+
+CREATE TABLE wallet_public_keys_temp (
+    key_id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES customers(customer_id) ON DELETE CASCADE,
+    public_key TEXT NOT NULL,
+    access_level VARCHAR(50) NOT NULL DEFAULT 'read_write',
+    username VARCHAR(255)
+ );
+
+ ALTER TABLE wallet_public_keys_temp add invitor TEXT;
+
+ ALTER TABLE wallet_public_keys_temp
+ADD CONSTRAINT unique_customer_public_key UNIQUE (customer_id, public_key);
+
+
+CREATE TABLE transfer_created (
+    event VARCHAR(50),
+    transaction VARCHAR(50),
+    network_id INT,
+    network_name VARCHAR(50),
+    contract_address VARCHAR(42),
+    email VARCHAR(255),
+    company TEXT,
+    parent VARCHAR(50),
+    id UUID,
+    invoice_id VARCHAR(50),
+    bill_date TIMESTAMP,
+    to_address VARCHAR(42),
+    from_address VARCHAR(42),
+    token_symbol VARCHAR(10),
+    token_address VARCHAR(42),
+    payment_type VARCHAR(50),
+    usd BOOLEAN,
+    amount NUMERIC(10, 2),
+    item VARCHAR(255),
+    item_id INT,
+    source VARCHAR(50),
+    batch_id UUID,
+    transfer_id UUID,
+    ref_id VARCHAR(255),
+    agreement_id UUID
+);
+
+CREATE TABLE loop_payment_transfer_processed (
+    event               VARCHAR(255) NOT NULL,
+    transaction         VARCHAR(255) NOT NULL,
+    network_id          INTEGER NOT NULL,
+    network_name        VARCHAR(255) NOT NULL,
+    contract_address    VARCHAR(255) NOT NULL,
+    email               VARCHAR(255),
+    company             VARCHAR(255),
+    parent              VARCHAR(255),
+    transfer_id         VARCHAR(255) NOT NULL,
+    success             BOOLEAN NOT NULL,
+    payment_token_address VARCHAR(255),
+    payment_token_symbol VARCHAR(255),
+    end_user            VARCHAR(255),
+    reason              VARCHAR(255),
+    invoice_id          VARCHAR(255),
+    amount_paid         DOUBLE PRECISION,
+    agreement_id        VARCHAR(255),
+    ref_id              VARCHAR(255),
+    batch_id            VARCHAR(255),
+    usd_amount          VARCHAR(255)
+);
+
+CREATE TABLE loop_payment_responses (
+    id SERIAL PRIMARY KEY,
+    event TEXT,
+    transaction TEXT,
+    network_id INT,
+    network_name TEXT,
+    contract_address TEXT,
+    email TEXT,
+    company TEXT,
+    parent TEXT,
+    subscriber TEXT,
+    item TEXT,
+    item_id TEXT,
+    agreement_id TEXT,
+    agreement_amount TEXT,
+    frequency_number INT,
+    frequency_unit TEXT,
+    add_on_agreements TEXT,
+    add_on_items TEXT,
+    add_on_item_ids TEXT,
+    add_on_total_amount TEXT,
+    payment_token_symbol TEXT,
+    payment_token_address TEXT,
+    event_date INT,
+    ref_id TEXT,
+    invoice_id TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb
+);
+
+
+CREATE TABLE plans (
+    plan_id SERIAL PRIMARY KEY,
+    plan_name VARCHAR(50) NOT NULL UNIQUE,
+    plan_description TEXT,
+    plan_price NUMERIC(10, 2) NOT NULL,
+    plan_features TEXT
+);
+
+ALTER TABLE plans ADD COLUMN total_feeds integer default 3;
+ALTER TABLE plans ADD COLUMN total_oracles integer default 3;
+
+
+
+
+
+INSERT INTO  "plans"("plan_id","plan_name","plan_description","plan_price","plan_features","total_feeds")
 VALUES
-(0,E'default',E'default',0,E'desc');
+(1,E'Plan 2',E'default',0,E'desc',10);
+
+INSERT INTO  "plans"("plan_id","plan_name","plan_description","plan_price","plan_features","total_feeds")
+VALUES
+(2,E'Plan 1',E'default',0,E'desc',3);
 

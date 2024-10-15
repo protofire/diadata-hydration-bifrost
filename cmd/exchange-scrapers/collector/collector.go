@@ -43,6 +43,7 @@ var (
 		dia.PearlfiExchangeTestnet,
 		dia.PanCakeSwapExchangeV3,
 		dia.HydrationExchange,
+		dia.BitflowExchange,
 	}
 
 	exchange = flag.String("exchange", "", "which exchange")
@@ -128,12 +129,14 @@ func main() {
 		w = kafkaHelper.NewWriter(kafkaHelper.TopicTradesEstimation)
 	}
 
-	defer func() {
-		err := w.Close()
-		if err != nil {
-			log.Error(err)
-		}
-	}()
+	if *mode != "storeTrades" {
+		defer func() {
+			err := w.Close()
+			if err != nil {
+				log.Error(err)
+			}
+		}()
+	}
 
 	wg := sync.WaitGroup{}
 

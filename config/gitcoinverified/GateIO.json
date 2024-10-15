@@ -1,10 +1,22 @@
 {
     "Tokens": [
         {
+            "Symbol": "AAVE",
+            "Exchange": "GateIO",
+            "Blockchain": "Ethereum",
+            "Address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"
+        },
+        {
             "Symbol": "ACA",
             "Exchange": "GateIO",
             "Blockchain": "Acala",
             "Address": "Token:ACA"
+        },
+        {
+            "Symbol": "AERO",
+            "Exchange": "GateIO",
+            "Blockchain": "Base",
+            "Address": "0x940181a94A35A4569E4529A3CDfB74e38FD98631"
         },
         {
             "Symbol": "ANGLE",
@@ -53,6 +65,12 @@
             "Exchange": "GateIO",
             "Blockchain": "AlephZero",
             "Address": "0x0000000000000000000000000000000000000000"
+        },
+        {
+            "Symbol": "BENJI",
+            "Exchange": "GateIO",
+            "Blockchain": "Base",
+            "Address": "0xBC45647eA894030a4E9801Ec03479739FA2485F0"
         },
         {
             "Symbol": "BEPRO",
@@ -385,6 +403,12 @@
             "Address": "0x9F5F3CFD7a32700C93F971637407ff17b91c7342"
         },
         {
+            "Symbol": "DEGEN",
+            "Exchange": "GateIO",
+            "Blockchain": "Base",
+            "Address": "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed"
+        },
+        {
             "Symbol": "DGD",
             "Exchange": "GateIO",
             "Blockchain": "Ethereum",
@@ -667,6 +691,12 @@
             "Address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
         },
         {
+            "Symbol": "MIGGLES",
+            "Exchange": "GateIO",
+            "Blockchain": "Base",
+            "Address": "0xB1a03EdA10342529bBF8EB700a06C60441fEf25d"
+        },
+        {
             "Symbol": "MCO",
             "Exchange": "GateIO",
             "Blockchain": "Ethereum",
@@ -791,6 +821,12 @@
             "Exchange": "GateIO",
             "Blockchain": "Avalanche",
             "Address": "0x60781C2586D68229fde47564546784ab3fACA982"
+        },
+        {
+            "Symbol": "POL",
+            "Exchange": "GateIO",
+            "Blockchain": "Polygon",
+            "Address": "0x0000000000000000000000000000000000001010"
         },
         {
             "Symbol": "POWR",
@@ -940,7 +976,7 @@
             "Symbol": "SOV",
             "Exchange": "GateIO",
             "Blockchain": "Rootstock",
-            "Address": "0xEfC78FC7D48B64958315949279bA181C2114abbD"
+            "Address": "0xEFc78fc7d48b64958315949279Ba181c2114ABBd"
         },
         {
             "Symbol": "SPA",
@@ -1009,6 +1045,12 @@
             "Address": "0x0000000000000000000000000000000000000000"
         },
         {
+            "Symbol": "TOSHI",
+            "Exchange": "GateIO",
+            "Blockchain": "Base",
+            "Address": "0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4"
+        },
+        {
             "Symbol": "UNI",
             "Exchange": "GateIO",
             "Blockchain": "Ethereum",
@@ -1073,6 +1115,12 @@
             "Exchange": "GateIO",
             "Blockchain": "Ethereum",
             "Address": "0x667088b212ce3d06a1b553a7221E1fD19000d9aF"
+        },
+        {
+            "Symbol": "XAI",
+            "Exchange": "GateIO",
+            "Blockchain": "Arbitrum",
+            "Address": "0x4Cb9a7AE498CEDcBb5EAe9f25736aE7d428C9D66"
         },
         {
             "Symbol": "XVG",

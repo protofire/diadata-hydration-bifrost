@@ -61,6 +61,12 @@
             "Ignore": false
         },
         {
+            "Symbol": "AERO",
+            "ForeignName": "AERO-USDT",
+            "Exchange": "KuCoin",
+            "Ignore": false
+        },
+        {
             "Symbol": "AKRO",
             "ForeignName": "AKRO-BTC",
             "Exchange": "KuCoin",
@@ -513,6 +519,12 @@
         {
             "Symbol": "DCR",
             "ForeignName": "DCR-BTC",
+            "Exchange": "KuCoin",
+            "Ignore": false
+        },
+        {
+            "Symbol": "DEGEN",
+            "ForeignName": "DEGEN-USDT",
             "Exchange": "KuCoin",
             "Ignore": false
         },
@@ -1315,6 +1327,12 @@
             "Ignore": false
         },
         {
+            "Symbol": "POL",
+            "ForeignName": "POL-USDT",
+            "Exchange": "KuCoin",
+            "Ignore": false
+        },
+        {
             "Symbol": "POWR",
             "ForeignName": "POWR-BTC",
             "Exchange": "KuCoin",
@@ -1743,6 +1761,12 @@
         {
             "Symbol": "WXT",
             "ForeignName": "WXT-USDT",
+            "Exchange": "KuCoin",
+            "Ignore": false
+        },
+        {
+            "Symbol": "XAI",
+            "ForeignName": "XAI-USDT",
             "Exchange": "KuCoin",
             "Ignore": false
         },

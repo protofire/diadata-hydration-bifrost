@@ -19,6 +19,12 @@
             "Address": "0x91Af0fBB28ABA7E31403Cb457106Ce79397FD4E6"
         },
         {
+            "Symbol": "AERO",
+            "Exchange": "KuCoin",
+            "Blockchain": "Base",
+            "Address": "0x940181a94A35A4569E4529A3CDfB74e38FD98631"
+        },
+        {
             "Symbol": "AKRO",
             "Exchange": "KuCoin",
             "Blockchain": "Ethereum",
@@ -229,6 +235,12 @@
             "Address": "0xaBbBB6447B68ffD6141DA77C18c7B5876eD6c5ab"
         },
         {
+            "Symbol": "DEGEN",
+            "Exchange": "KuCoin",
+            "Blockchain": "Base",
+            "Address": "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed"
+        },
+        {
             "Symbol": "DEGO",
             "Exchange": "KuCoin",
             "Blockchain": "Ethereum",
@@ -293,7 +305,7 @@
             "Exchange": "KuCoin",
             "Blockchain": "BinanceSmartChain",
             "Address": "0xBdEAe1cA48894A1759A8374D63925f21f2Ee2639"
-        },   
+        },
         {
             "Symbol": "ELF",
             "Exchange": "KuCoin",
@@ -603,8 +615,8 @@
         {
             "Symbol": "POL",
             "Exchange": "KuCoin",
-            "Blockchain": "Tron",
-            "Address": "TWcDDx1Q6QEoBrJi9qehtZnD4vcXXuVLer"
+            "Blockchain": "Polygon",
+            "Address": "0x0000000000000000000000000000000000001010"
         },
         {
             "Symbol": "POLK",
@@ -905,6 +917,12 @@
             "Exchange": "KuCoin",
             "Blockchain": "Ethereum",
             "Address": "0xBd356a39BFf2cAda8E9248532DD879147221Cf76"
+        },
+        {
+            "Symbol": "XAI",
+            "Exchange": "KuCoin",
+            "Blockchain": "Arbitrum",
+            "Address": "0x4Cb9a7AE498CEDcBb5EAe9f25736aE7d428C9D66"
         },
         {
             "Symbol": "XCUR",

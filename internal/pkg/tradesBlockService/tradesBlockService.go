@@ -641,6 +641,20 @@ func buildBridge(t dia.Trade) dia.Asset {
 				Blockchain: dia.ETHEREUM,
 			}
 		}
+		if basetoken.Address == "0xc518A88c67CECA8B3f24c4562CB71deeB2AF86B7" {
+			basetoken = dia.Asset{
+				Symbol:     "USDC",
+				Address:    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+				Blockchain: dia.ETHEREUM,
+			}
+		}
+		if basetoken.Address == "0xAEC9e50e3397f9ddC635C6c429C8C7eca418a143" {
+			basetoken = dia.Asset{
+				Symbol:     "USDC",
+				Address:    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+				Blockchain: dia.ETHEREUM,
+			}
+		}
 	}
 	if basetoken.Blockchain == dia.BINANCESMARTCHAIN && t.Source == dia.PanCakeSwapExchangeV3 {
 		if basetoken.Address == "0x55d398326f99059fF775485246999027B3197955" {
@@ -665,6 +679,18 @@ func buildBridge(t dia.Trade) dia.Asset {
 			basetoken = dia.Asset{
 				Symbol:     "USDC",
 				Address:    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+				Blockchain: dia.ETHEREUM,
+			}
+		}
+	}
+	if basetoken.Blockchain == dia.BASE && (t.Source == dia.UniswapExchangeV3Base ||
+		t.Source == dia.UniswapExchangeBase ||
+		t.Source == dia.AerodromeSlipstreamExchange ||
+		t.Source == dia.AerodromeV1Exchange) {
+		if basetoken.Address == "0x4200000000000000000000000000000000000006" {
+			basetoken = dia.Asset{
+				Symbol:     "WETH",
+				Address:    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 				Blockchain: dia.ETHEREUM,
 			}
 		}

@@ -1,6 +1,12 @@
 {
   "Tokens": [
     {
+      "Symbol": "AAVE",
+      "Exchange": "Kraken",
+      "Blockchain": "Ethereum",
+      "Address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"
+    },
+    {
       "Symbol": "AKT",
       "Exchange": "Kraken",
       "Blockchain": "Osmosis",
@@ -89,6 +95,12 @@
       "Exchange": "Kraken",
       "Blockchain": "Ethereum",
       "Address": "0x45804880De22913dAFE09f4980848ECE6EcbAf78"
+    },
+    {
+      "Symbol": "POL",
+      "Exchange": "Kraken",
+      "Blockchain": "Polygon",
+      "Address": "0x0000000000000000000000000000000000001010"
     },
     {
       "Symbol": "REP",

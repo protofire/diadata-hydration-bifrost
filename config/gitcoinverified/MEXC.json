@@ -7,6 +7,12 @@
       "Address": "0x0000000000000000000000000000000000000000"
     },
     {
+      "Symbol": "AINU",
+      "Exchange": "MEXC",
+      "Blockchain": "Ethereum",
+      "Address": "0x2598c30330D5771AE9F983979209486aE26dE875"
+    },
+    {
       "Symbol": "ALPH",
       "Exchange": "MEXC",
       "Blockchain": "Alephium",
@@ -85,12 +91,6 @@
       "Address": "0x0000000000000000000000000000000000000000"
     },
     {
-      "Symbol": "BFC",
-      "Exchange": "MEXC",
-      "Blockchain": "Ethereum",
-      "Address": "0x0c7D5ae016f806603CB1782bEa29AC69471CAb9c"
-    },
-    {
       "Symbol": "BFR",
       "Exchange": "MEXC",
       "Blockchain": "Arbitrum",
@@ -161,6 +161,12 @@
       "Exchange": "MEXC",
       "Blockchain": "Ethereum",
       "Address": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+    },
+    {
+      "Symbol": "DEGEN",
+      "Exchange": "MEXC",
+      "Blockchain": "Base",
+      "Address": "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed"
     },
     {
       "Symbol": "DFYN",
@@ -403,6 +409,12 @@
       "Address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
     },
     {
+      "Symbol": "MIGGLES",
+      "Exchange": "MEXC",
+      "Blockchain": "Base",
+      "Address": "0xB1a03EdA10342529bBF8EB700a06C60441fEf25d"
+    },
+    {
       "Symbol": "MOG",
       "Exchange": "MEXC",
       "Blockchain": "Ethereum",
@@ -479,6 +491,12 @@
       "Exchange": "MEXC",
       "Blockchain": "Avalanche",
       "Address": "0x60781C2586D68229fde47564546784ab3fACA982"
+    },
+    {
+      "Symbol": "POL",
+      "Exchange": "MEXC",
+      "Blockchain": "Polygon",
+      "Address": "0x0000000000000000000000000000000000001010"
     },
     {
       "Symbol": "PSP",
@@ -689,6 +707,12 @@
       "Exchange": "MEXC",
       "Blockchain": "Ethereum",
       "Address": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e"
+    },
+    {
+      "Symbol": "XAI",
+      "Exchange": "MEXC",
+      "Blockchain": "Arbitrum",
+      "Address": "0x4Cb9a7AE498CEDcBb5EAe9f25736aE7d428C9D66"
     },
     {
       "Symbol": "XFI",

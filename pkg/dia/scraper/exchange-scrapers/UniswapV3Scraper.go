@@ -1,6 +1,7 @@
 package scrapers
 
 import (
+	"context"
 	"errors"
 	"math"
 	"math/big"
@@ -85,6 +86,8 @@ func NewUniswapV3Scraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "200", uint64(22757913))
 	case dia.UniswapExchangeV3Arbitrum:
 		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "200", uint64(165))
+	case dia.UniswapExchangeV3Base:
+		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "200", uint64(1371680))
 	case dia.PanCakeSwapExchangeV3:
 		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "200", uint64(26956207))
 	case dia.CamelotExchangeV3:
@@ -100,6 +103,8 @@ func NewUniswapV3Scraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "200", uint64(90593047))
 	case dia.NileV2Exchange:
 		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "2000", uint64(1768866))
+	case dia.AerodromeSlipstreamExchange:
+		s = makeUniswapV3Scraper(exchange, listenByAddress, "", "", "2000", uint64(0))
 	}
 
 	s.relDB = relDB
@@ -120,6 +125,14 @@ func NewUniswapV3Scraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 	poolMap, err = s.makeUniV3PoolMap(liquidityThreshold, liquidityThresholdUSD)
 	if err != nil {
 		log.Fatal("build poolMap: ", err)
+	}
+
+	pingNodeInterval, err := strconv.ParseInt(utils.Getenv("PING_SERVER", "0"), 10, 64)
+	if err != nil {
+		log.Error("parse PING_SERVER: ", err)
+	}
+	if pingNodeInterval > 0 {
+		s.pingNode(pingNodeInterval)
 	}
 
 	if scrape {
@@ -540,6 +553,20 @@ func (s *UniswapV3Scraper) ScrapePair(pair dia.ExchangePair) (PairScraper, error
 	}
 	s.pairScrapers[pair.ForeignName] = ps
 	return ps, nil
+}
+
+func (s *UniswapV3Scraper) pingNode(pingNodeInterval int64) {
+	ticker := time.NewTicker(time.Duration(pingNodeInterval) * time.Second)
+	go func() {
+		for range ticker.C {
+			blockNumber, err := s.WsClient.BlockNumber(context.Background())
+			if err != nil {
+				log.Error("pingNode: ", err)
+			} else {
+				log.Infof("%v -- blockNumber: %d", time.Now(), blockNumber)
+			}
+		}
+	}()
 }
 
 // UniswapPairScraper implements PairScraper for Uniswap
