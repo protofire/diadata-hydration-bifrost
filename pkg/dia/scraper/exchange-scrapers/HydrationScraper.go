@@ -4,13 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/diadata-org/diadata/pkg/dia"
-	hydrationhelper "github.com/diadata-org/diadata/pkg/dia/helpers/hydration-helper"
 	models "github.com/diadata-org/diadata/pkg/model"
+
+	substratehelper "github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper"
 	"github.com/diadata-org/diadata/pkg/utils"
+	"github.com/didaunesp/no-signature-go-substrate-rpc-client-v4/registry/parser"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
@@ -25,7 +28,7 @@ type HydrationScraper struct {
 	closed       bool
 	chanTrades   chan *dia.Trade
 	db           *models.RelDB
-	wsApi        *hydrationhelper.SubstrateEventHelper
+	wsApi        *substratehelper.SubstrateEventHelper
 	exchangeName string
 	blockchain   string
 	wsClient     *websocket.Conn
@@ -37,7 +40,7 @@ func NewHydrationScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 		WithContext(context.Background()).
 		WithField("context", "HydrationScraper")
 
-	wsApi, err := hydrationhelper.NewSubstrateEventHelper(logger, exchange.WsAPI)
+	wsApi, err := substratehelper.NewSubstrateEventHelper(exchange.WsAPI, logger)
 	if err != nil {
 		logrus.WithError(err).Error("Failed to create Hydration Substrate event helper")
 		return nil
@@ -67,8 +70,10 @@ func NewHydrationScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 // block = 0xfd38c9dc2c95278fd3015f73b48a01e804320865a1a6153e31471cb782be92f0
 // blocknumber = 6148977
 func (s *HydrationScraper) mainLoop() {
-	//go s.wsApi.ListenForNewBlocks(s.processEvents)
-	go s.wsApi.ListenForSpecificBlock(6149553, s.processEvents)
+	s.logger.Info("Listening for new blocks")
+	// go s.wsApi.ListenForNewBlocks(s.processEvents)
+	go s.wsApi.ListenForSpecificBlock(6148977, s.processEvents)
+
 	defer s.cleanup(nil)
 
 	for {
@@ -81,29 +86,102 @@ func (s *HydrationScraper) mainLoop() {
 	}
 }
 
-func (s *HydrationScraper) processEvents(events *[]hydrationhelper.EventSellExecuted) {
+func (s *HydrationScraper) processEvents(events []*parser.Event) {
 	s.logger.Info("Processing events")
-	for _, event := range *events {
 
-		assetIn := fmt.Sprint(event.AssetIn)
-		assetOut := fmt.Sprint(event.AssetOut)
-		pool, err := s.db.GetPoolByAssetPair(assetIn, assetOut, "Hydration")
-		if err != nil {
-			s.logger.WithError(err).WithField("exchangeName", "Hydration").WithField("assetIn", assetIn).WithField("assetOut", assetOut).Error("Failed to get pool by asset pair")
-			continue
-		}
+	for _, e := range events {
+		s.parseFields(e)
+		// pool, err := s.db.GetPoolByAssetPair(parsedEvent.AssetIn, parsedEvent.AssetOut, s.exchangeName)
+		// if err != nil {
+		// 	continue
+		// }
 
-		s.logger.WithField("assetIn", assetIn).WithField("assetOut", assetOut).Info("Processing event")
+		// if len(pool.Assetvolumes) < 2 {
+		// 	s.logger.WithField("poolAddress", pool.Address).Error("Pool has fewer than 2 asset volumes")
+		// 	continue
+		// }
 
-		if len(pool.Assetvolumes) < 2 {
-			s.logger.WithField("poolAddress", pool.Address).Error("Pool has fewer than 2 asset volumes")
-			continue
-		}
+		// diaTrade := s.handleTrade(pool, *parsedEvent, time.Now())
 
-		diaTrade := s.handleTrade(pool, event, time.Now())
-		s.chanTrades <- diaTrade
+		// s.logger.WithFields(logrus.Fields{
+		// 	"Time":           diaTrade.Time,
+		// 	"Symbol":         diaTrade.Symbol,
+		// 	"Pair":           diaTrade.Pair,
+		// 	"Source":         diaTrade.Source,
+		// 	"Price":          diaTrade.Price,
+		// 	"Volume":         diaTrade.Volume,
+		// 	"VerifiedPair":   diaTrade.VerifiedPair,
+		// 	"QuoteToken":     diaTrade.QuoteToken,
+		// 	"BaseToken":      diaTrade.BaseToken,
+		// 	"PoolAddress":    diaTrade.PoolAddress,
+		// 	"ForeignTradeID": diaTrade.ForeignTradeID,
+		// }).Info("Trade details")
+		// s.chanTrades <- diaTrade
 	}
-	s.logger.Fatal("No more events")
+}
+
+func (s *HydrationScraper) parseFields(event *parser.Event) *HydrationParsedEvent {
+
+	if strings.ToUpper(event.Name) == strings.ToUpper("XYK.SellExecuted") {
+		return s.parseXYKEvent(event)
+	}
+
+	switch strings.ToUpper(event.Name) {
+	case strings.ToUpper("XYK.SellExecuted"):
+		return s.parseXYKEvent(event)
+	case strings.ToUpper("StableSwap.SellExecuted"):
+		return s.parseStableSwapEvent(event)
+	case strings.ToUpper("OmniPool.SellExecuted"):
+		return s.parseOmniPoolEvent(event)
+	}
+
+	return nil
+}
+
+func (s *HydrationScraper) parseXYKEvent(event *parser.Event) *HydrationParsedEvent {
+	parsedEvent := &HydrationParsedEvent{}
+	s.logger.Warn(event.Name)
+	for _, v := range event.Fields {
+		s.logger.WithFields(logrus.Fields{
+			"Name":  v.Name,
+			"Value": v.Value,
+		}).Info("Event fields")
+		// switch v.Name {
+		// case "asset_in":
+		// 	parsedEvent.AssetIn = fmt.Sprint(v.Value)
+		// case "asset_out":
+		// 	parsedEvent.AssetOut = fmt.Sprint(v.Value)
+		// case "amount_in":
+		// 	parsedEvent.AmountIn = fmt.Sprint(v.Value)
+		// case "amount_out":
+		// 	parsedEvent.AmountOut = fmt.Sprint(v.Value)
+		// }
+	}
+	return parsedEvent
+}
+
+func (s *HydrationScraper) parseStableSwapEvent(event *parser.Event) *HydrationParsedEvent {
+	parsedEvent := &HydrationParsedEvent{}
+	s.logger.Warn(event.Name)
+	for _, v := range event.Fields {
+		s.logger.WithFields(logrus.Fields{
+			"Name":  v.Name,
+			"Value": v.Value,
+		}).Info("Event fields")
+	}
+	return parsedEvent
+}
+
+func (s *HydrationScraper) parseOmniPoolEvent(event *parser.Event) *HydrationParsedEvent {
+	parsedEvent := &HydrationParsedEvent{}
+	s.logger.Warn(event.Name)
+	for _, v := range event.Fields {
+		s.logger.WithFields(logrus.Fields{
+			"Name":  v.Name,
+			"Value": v.Value,
+		}).Info("Event fields")
+	}
+	return parsedEvent
 }
 
 func (s *HydrationScraper) cleanup(err error) {
@@ -158,7 +236,7 @@ func (ps *HydrationPairScraper) Error() error {
 }
 
 // Channel returns the channel used to receive trades/pricing information.
-func (s *HydrationScraper) handleTrade(pool dia.Pool, event hydrationhelper.EventSellExecuted, time time.Time) *dia.Trade {
+func (s *HydrationScraper) handleTrade(pool dia.Pool, event HydrationParsedEvent, time time.Time) *dia.Trade {
 	var volume, price float64
 	var decimalsIn, decimalsOut int64
 
@@ -177,26 +255,31 @@ func (s *HydrationScraper) handleTrade(pool dia.Pool, event hydrationhelper.Even
 		decimalsOut = int64(quoteToken.Decimals)
 	}
 
-	amountIn, _ := utils.StringToFloat64(fmt.Sprint(event.AmountIn), decimalsIn)
-	amountOut, _ := utils.StringToFloat64(fmt.Sprint(event.AmountOut), decimalsOut)
+	amountIn, _ := utils.StringToFloat64(event.AmountIn, decimalsIn)
+	amountOut, _ := utils.StringToFloat64(event.AmountOut, decimalsOut)
 
 	volume = amountIn
 	price = amountOut / amountIn
+	s.logger.WithFields(logrus.Fields{
+		"amountIn":  amountIn,
+		"amountOut": amountOut,
+		"price":     volume,
+	}).Info("Trade details")
 
 	symbolPair := fmt.Sprintf("%s-%s", baseToken.Symbol, quoteToken.Symbol)
 
 	return &dia.Trade{
-		Time:   time,
-		Symbol: baseToken.Symbol,
-		Pair:   symbolPair,
-		// ForeignTradeID: event.Who, //TODO:Hydration change it to the actual trade ID
-		Source:       s.exchangeName,
-		Price:        price,
-		Volume:       volume,
-		VerifiedPair: true,
-		QuoteToken:   quoteToken,
-		BaseToken:    baseToken,
-		PoolAddress:  pool.Address,
+		Time:           time,
+		Symbol:         baseToken.Symbol,
+		Pair:           symbolPair,
+		ForeignTradeID: event.EventId,
+		Source:         s.exchangeName,
+		Price:          price,
+		Volume:         volume,
+		VerifiedPair:   true,
+		QuoteToken:     quoteToken,
+		BaseToken:      baseToken,
+		PoolAddress:    pool.Address,
 	}
 }
 
@@ -230,4 +313,13 @@ func (s *HydrationScraper) ScrapePair(pair dia.ExchangePair) (PairScraper, error
 	s.pairScrapers[pair.Symbol] = ps
 
 	return ps, nil
+}
+
+type HydrationParsedEvent struct {
+	Name      string
+	EventId   string
+	AssetIn   string
+	AssetOut  string
+	AmountIn  string
+	AmountOut string
 }

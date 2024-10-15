@@ -290,8 +290,6 @@ func NewAPIScraper(exchange string, scrape bool, key string, secret string, relD
 		return NewUniswapHistoryScraper(Exchanges[dia.UniswapExchange], scrape, relDB)
 	case dia.AyinExchange:
 		return NewAyinScraper(Exchanges[dia.AyinExchange], scrape, relDB)
-	case dia.BifrostExchange:
-		return NewBifrostScraper(Exchanges[dia.BifrostExchange], scrape, relDB)
 	case dia.HydrationExchange:
 		return NewHydrationScraper(Exchanges[dia.HydrationExchange], scrape, relDB)
 	default:
