@@ -310,6 +310,8 @@ func NewAPIScraper(exchange string, scrape bool, key string, secret string, relD
 		return NewBitflowScraper(Exchanges[dia.BitflowExchange], scrape, relDB)
 	case dia.VelarExchange:
 		return NewVelarScraper(Exchanges[dia.VelarExchange], scrape, relDB)
+	case dia.BifrostExchange:
+		return NewBifrostScraper(Exchanges[dia.BifrostExchange], scrape, relDB)
 	default:
 		return nil
 	}
