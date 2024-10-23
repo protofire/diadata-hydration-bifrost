@@ -1,14 +1,14 @@
-package bifrosthelper
+package substratehelper
 
 import (
 	"fmt"
 
-	gsrpc "github.com/didaunesp/no-signature-go-substrate-rpc-client-v4"
-	"github.com/didaunesp/no-signature-go-substrate-rpc-client-v4/registry/parser"
-	"github.com/didaunesp/no-signature-go-substrate-rpc-client-v4/registry/retriever"
-	"github.com/didaunesp/no-signature-go-substrate-rpc-client-v4/registry/state"
+	gsrpc "github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper/gsrpc"
+	"github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper/gsrpc/registry/parser"
+	"github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper/gsrpc/registry/retriever"
+	"github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper/gsrpc/registry/state"
 
-	"github.com/didaunesp/no-signature-go-substrate-rpc-client-v4/types"
+	"github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper/gsrpc/types"
 
 	"github.com/sirupsen/logrus"
 )
@@ -70,6 +70,7 @@ func (s *SubstrateEventHelper) ListenForNewBlocks(callback func([]*parser.Event)
 	if err != nil {
 		return fmt.Errorf("failed to subscribe to new heads: %v", err)
 	}
+	s.logger.Info("Listening for new blocks...")
 
 	for {
 		head := <-sub.Chan()
@@ -79,7 +80,7 @@ func (s *SubstrateEventHelper) ListenForNewBlocks(callback func([]*parser.Event)
 			s.logger.Errorf("Failed to fetch block hash: %v\n", err)
 			continue
 		}
-		fmt.Printf("\nNew block detected! Block number: %v, Block hash: %v\n", head.Number, blockHash.Hex())
+		s.logger.Infof("\nNew block detected! Block number: %v, Block hash: %v\n", head.Number, blockHash.Hex())
 
 		events, err := s.DecodeEvents(blockHash)
 		if err != nil {

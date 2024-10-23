@@ -11,13 +11,11 @@ require (
 	github.com/bitfinexcom/bitfinex-api-go v0.0.0-20200709134622-b8be40b33f25
 	github.com/blockstatecom/go-bitcoind v0.0.0-20180820094557-9dedf42af7c3
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
-	github.com/centrifuge/go-substrate-rpc-client/v4 v4.0.0
 	github.com/cnf/structhash v0.0.0-20180104161610-62a607eb0224
 	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/cosmos/ibc-go/v3 v3.0.0
 	github.com/cryptwire/go-binance/v2 v2.2.3
 	github.com/davecgh/go-spew v1.1.1
-	github.com/didaunesp/no-signature-go-substrate-rpc-client-v4 v0.0.0-20241011121329-e541f617994e
 	github.com/ethereum/go-ethereum v1.10.26
 	github.com/fatih/structs v1.1.0
 	github.com/gagliardetto/binary v0.7.9
@@ -32,7 +30,6 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/graph-gophers/graphql-go v1.3.0
 	github.com/influxdata/influxdb1-client v0.0.0-20220302092344-a9ab5670611c
-	github.com/itering/scale.go v1.9.8
 	github.com/jackc/pgtype v1.7.0
 	github.com/jackc/pgx/v4 v4.11.0
 	github.com/machinebox/graphql v0.2.2
@@ -41,9 +38,11 @@ require (
 	github.com/onflow/flow-go-sdk v0.20.0
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/osmosis-labs/osmosis/v6 v6.4.1
+	github.com/pierrec/xxHash v0.1.5
 	github.com/pkg/errors v0.9.1
 	github.com/portto/solana-go-sdk v1.22.0
 	github.com/preichenberger/go-coinbasepro/v2 v2.0.5
+	github.com/rs/cors v1.8.2
 	github.com/segmentio/kafka-go v0.4.35
 	github.com/shopspring/decimal v1.4.0
 	github.com/sirupsen/logrus v1.9.3
@@ -60,6 +59,7 @@ require (
 	golang.org/x/sync v0.8.0
 	google.golang.org/grpc v1.44.0
 	google.golang.org/protobuf v1.34.2
+	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce
 )
 
 require (
@@ -95,8 +95,6 @@ require (
 	github.com/cosmos/ledger-go v0.9.2 // indirect
 	github.com/daaku/go.zipexe v1.0.0 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
-	github.com/decred/base58 v1.0.3 // indirect
-	github.com/decred/dcrd/crypto/blake256 v1.0.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/dgraph-io/badger/v2 v2.2007.3 // indirect
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
@@ -127,6 +125,7 @@ require (
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/rpc v1.2.0 // indirect
@@ -140,7 +139,6 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/holiman/uint256 v1.3.1 // indirect
-	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.8.1 // indirect
@@ -158,7 +156,6 @@ require (
 	github.com/leodido/go-urn v1.3.0 // indirect
 	github.com/libp2p/go-buffer-pool v0.0.2 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
-	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/matryer/is v1.4.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -179,7 +176,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
-	github.com/pierrec/xxHash v0.1.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.12.0 // indirect
 	github.com/prometheus/client_model v0.2.1-0.20210607210712-147c58e9608a // indirect
@@ -190,7 +186,6 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rjeczalik/notify v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
-	github.com/rs/cors v1.8.2 // indirect
 	github.com/sasha-s/go-deadlock v0.2.1-0.20190427202633-1595213edefa // indirect
 	github.com/segmentio/fasthash v1.0.3 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
@@ -201,7 +196,6 @@ require (
 	github.com/spf13/viper v1.10.1 // indirect
 	github.com/streamingfast/binary v0.0.0-20210928223119-44fc44e4a0b5 // indirect
 	github.com/streamingfast/logging v0.0.0-20230608130331-f22c91403091 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tecbot/gorocksdb v0.0.0-20191217155057-f0fad39f321c // indirect
@@ -215,7 +209,6 @@ require (
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	github.com/vedhavyas/go-subkey v1.0.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/ybbus/jsonrpc v2.1.2+incompatible // indirect
 	github.com/zondax/hid v0.9.0 // indirect
@@ -232,7 +225,6 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
-	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -243,11 +235,10 @@ require (
 	github.com/adshao/go-binance/v2 v2.3.6
 	github.com/antchfx/htmlquery v1.2.5 // indirect
 	github.com/antchfx/xmlquery v1.3.13 // indirect
-	github.com/deckarep/golang-set v1.8.0 // indirect
+	github.com/deckarep/golang-set v1.8.0
 	github.com/gballet/go-libpcsclite v0.0.0-20191108122812-4678299bea08 // indirect
 	github.com/hdevalence/ed25519consensus v0.1.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
-	github.com/machinebox/graphql v0.2.2
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/rs/zerolog v1.29.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect

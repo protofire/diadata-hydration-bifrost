@@ -4,18 +4,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"strconv"
 
 	"github.com/diadata-org/diadata/pkg/dia"
 	models "github.com/diadata-org/diadata/pkg/model"
 
 	substratehelper "github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper"
+	"github.com/diadata-org/diadata/pkg/dia/helpers/substrate-helper/gsrpc/registry/parser"
 	"github.com/diadata-org/diadata/pkg/utils"
-	"github.com/didaunesp/no-signature-go-substrate-rpc-client-v4/registry/parser"
-	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
 
@@ -33,7 +32,6 @@ type HydrationScraper struct {
 	exchangeName string
 	blockchain   string
 	currentBlock uint64
-	wsClient     *websocket.Conn
 }
 
 func NewHydrationScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB) *HydrationScraper {
@@ -48,11 +46,11 @@ func NewHydrationScraper(exchange dia.Exchange, scrape bool, relDB *models.RelDB
 		return nil
 	}
 
-	startBlock := utils.Getenv(strings.ToUpper(exchange.Name)+"_START_BLOCK", "10")
+	startBlock := utils.Getenv(strings.ToUpper(exchange.Name)+"_START_BLOCK", "0")
 	startBlockUint64, err := strconv.ParseUint(startBlock, 10, 64)
 	if err != nil {
-		logrus.WithError(err).Error("Failed to parse start block, using default value of 10")
-		startBlockUint64 = 10
+		logrus.WithError(err).Error("Failed to parse start block, using default value of 0")
+		startBlockUint64 = 0
 	}
 
 	s := &HydrationScraper{
@@ -102,7 +100,7 @@ func (s *HydrationScraper) mainLoop() {
 					s.logger.WithError(err).Error("Failed to get latest block")
 					return
 				}
-	
+
 				if s.currentBlock > uint64(latestBlock.Block.Header.Number) {
 					s.logger.Info("Reached the latest block")
 					return
@@ -132,9 +130,9 @@ func (s *HydrationScraper) processEvents(events []*parser.Event) {
 		diaTrade := s.handleTrade(pool, *parsedEvent, time.Now())
 
 		s.logger.WithFields(logrus.Fields{
-			"Pair":           diaTrade.Pair,
-			"Price":          diaTrade.Price,
-			"Volume":         diaTrade.Volume,
+			"Pair":   diaTrade.Pair,
+			"Price":  diaTrade.Price,
+			"Volume": diaTrade.Volume,
 		}).Info("Trade processed")
 
 		s.chanTrades <- diaTrade
