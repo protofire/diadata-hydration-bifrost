@@ -15,6 +15,8 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+var ErrNoPool = errors.New("no pool found")
+
 // SavePoolInflux stores a DEX pool in influx.
 func (datastore *DB) SavePoolInflux(p dia.Pool) error {
 
@@ -572,5 +574,5 @@ func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange s
 		return dia.Pool{}, fmt.Errorf("error iterating rows: %w", err)
 	}
 
-	return dia.Pool{}, errors.New("no pool found")
+	return dia.Pool{}, ErrNoPool
 }
