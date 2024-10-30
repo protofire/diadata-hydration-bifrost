@@ -516,7 +516,8 @@ func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange s
 	query := `
 		SELECT DISTINCT p.exchange, p.blockchain, p.address AS pool_address,
 			a1.symbol AS asset_in_symbol, a2.symbol AS asset_out_symbol,
-			a1.decimals AS asset_in_decimals, a2.decimals AS asset_out_decimals
+			a1.decimals AS asset_in_decimals, a2.decimals AS asset_out_decimals,
+			a1.name, a2.name
 		FROM pool p
 		JOIN poolasset pa1 ON p.pool_id = pa1.pool_id
 		JOIN poolasset pa2 ON p.pool_id = pa2.pool_id
@@ -540,7 +541,7 @@ func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange s
 
 	if rows.Next() {
 		var pool dia.Pool
-		var assetInSymbol, assetOutSymbol, assetInDecimals, assetOutDecimals string
+		var assetInSymbol, assetOutSymbol, assetInDecimals, assetOutDecimals, assetInName, assetOutName string
 		err := rows.Scan(
 			&pool.Exchange.Name,
 			&pool.Blockchain.Name,
@@ -549,6 +550,8 @@ func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange s
 			&assetOutSymbol,
 			&assetInDecimals,
 			&assetOutDecimals,
+			&assetInName,
+			&assetOutName,
 		)
 		if err != nil {
 			return dia.Pool{}, fmt.Errorf("error scanning row: %w", err)
@@ -558,8 +561,8 @@ func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange s
 		assetOutDecimalsInt, _ := strconv.ParseUint(assetOutDecimals, 10, 8)
 
 		pool.Assetvolumes = []dia.AssetVolume{
-			{Asset: dia.Asset{Symbol: assetInSymbol, Address: assetInAddress, Decimals: uint8(assetInDecimalsInt)}},
-			{Asset: dia.Asset{Symbol: assetOutSymbol, Address: assetOutAddress, Decimals: uint8(assetOutDecimalsInt)}},
+			{Asset: dia.Asset{Symbol: assetInSymbol, Address: assetInAddress, Decimals: uint8(assetInDecimalsInt), Blockchain: pool.Blockchain.Name, Name: assetInName}},
+			{Asset: dia.Asset{Symbol: assetOutSymbol, Address: assetOutAddress, Decimals: uint8(assetOutDecimalsInt), Blockchain: pool.Blockchain.Name, Name: assetOutName}},
 		}
 
 		return pool, nil
