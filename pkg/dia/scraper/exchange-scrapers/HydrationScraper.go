@@ -110,12 +110,13 @@ func (s *HydrationScraper) mainLoop() {
 	}
 }
 
-func (s *HydrationScraper) processEvents(events []*parser.Event) {
+func (s *HydrationScraper) processEvents(events []*parser.Event, blockNumber uint64) {
 	for _, e := range events {
 		parsedEvent := s.parseFields(e)
 		if parsedEvent == nil {
 			continue
 		}
+		parsedEvent.ExtrinsicID = fmt.Sprintf("%d-%d", blockNumber, e.Phase.AsApplyExtrinsic)
 
 		pool, err := s.db.GetPoolByAssetPair(parsedEvent.AssetIn, parsedEvent.AssetOut, s.exchangeName)
 		if err != nil {
@@ -243,34 +244,33 @@ func (ps *HydrationPairScraper) Error() error {
 func (s *HydrationScraper) handleTrade(pool dia.Pool, event HydrationParsedEvent, time time.Time) *dia.Trade {
 	var volume, price float64
 	var decimalsIn, decimalsOut int64
-
 	var quoteToken, baseToken dia.Asset
 
 	// Determine which asset is being sold (this is the base asset)
 	if fmt.Sprint(event.AssetIn) == pool.Assetvolumes[0].Asset.Address {
 		baseToken = pool.Assetvolumes[0].Asset
 		quoteToken = pool.Assetvolumes[1].Asset
-		decimalsIn = int64(baseToken.Decimals)
-		decimalsOut = int64(quoteToken.Decimals)
 	} else {
 		baseToken = pool.Assetvolumes[1].Asset
 		quoteToken = pool.Assetvolumes[0].Asset
-		decimalsIn = int64(baseToken.Decimals)
-		decimalsOut = int64(quoteToken.Decimals)
 	}
 
+	decimalsIn = int64(baseToken.Decimals)
+	decimalsOut = int64(quoteToken.Decimals)
 	amountIn, _ := utils.StringToFloat64(event.AmountIn, decimalsIn)
 	amountOut, _ := utils.StringToFloat64(event.AmountOut, decimalsOut)
 
-	volume = amountIn
-	price = amountOut / amountIn
-	symbolPair := fmt.Sprintf("%s-%s", baseToken.Symbol, quoteToken.Symbol)
+	volume = amountOut
+
+	price = amountIn / amountOut
+
+	symbolPair := fmt.Sprintf("%s-%s", quoteToken.Symbol, baseToken.Symbol)
 
 	return &dia.Trade{
 		Time:           time,
-		Symbol:         baseToken.Symbol,
+		Symbol:         quoteToken.Symbol,
 		Pair:           symbolPair,
-		ForeignTradeID: event.EventId,
+		ForeignTradeID: event.ExtrinsicID,
 		Source:         s.exchangeName,
 		Price:          price,
 		Volume:         volume,
@@ -314,10 +314,10 @@ func (s *HydrationScraper) ScrapePair(pair dia.ExchangePair) (PairScraper, error
 }
 
 type HydrationParsedEvent struct {
-	Name      string
-	EventId   string
-	AssetIn   string
-	AssetOut  string
-	AmountIn  string
-	AmountOut string
+	Name        string
+	ExtrinsicID string
+	AssetIn     string
+	AssetOut    string
+	AmountIn    string
+	AmountOut   string
 }

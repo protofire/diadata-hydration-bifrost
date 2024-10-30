@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -514,7 +515,8 @@ func (datastore *DB) GetPoolLiquiditiesUSD(p *dia.Pool, priceCache map[string]fl
 func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange string) (dia.Pool, error) {
 	query := `
 		SELECT DISTINCT p.exchange, p.blockchain, p.address AS pool_address,
-			a1.symbol AS asset_in_symbol, a2.symbol AS asset_out_symbol
+			a1.symbol AS asset_in_symbol, a2.symbol AS asset_out_symbol,
+			a1.decimals AS asset_in_decimals, a2.decimals AS asset_out_decimals
 		FROM pool p
 		JOIN poolasset pa1 ON p.pool_id = pa1.pool_id
 		JOIN poolasset pa2 ON p.pool_id = pa2.pool_id
@@ -538,21 +540,26 @@ func (rdb *RelDB) GetPoolByAssetPair(assetInAddress, assetOutAddress, exchange s
 
 	if rows.Next() {
 		var pool dia.Pool
-		var assetInSymbol, assetOutSymbol string
+		var assetInSymbol, assetOutSymbol, assetInDecimals, assetOutDecimals string
 		err := rows.Scan(
 			&pool.Exchange.Name,
 			&pool.Blockchain.Name,
 			&pool.Address,
 			&assetInSymbol,
 			&assetOutSymbol,
+			&assetInDecimals,
+			&assetOutDecimals,
 		)
 		if err != nil {
 			return dia.Pool{}, fmt.Errorf("error scanning row: %w", err)
 		}
 
+		assetInDecimalsInt, _ := strconv.ParseUint(assetInDecimals, 10, 8)
+		assetOutDecimalsInt, _ := strconv.ParseUint(assetOutDecimals, 10, 8)
+
 		pool.Assetvolumes = []dia.AssetVolume{
-			{Asset: dia.Asset{Symbol: assetInSymbol, Address: assetInAddress}},
-			{Asset: dia.Asset{Symbol: assetOutSymbol, Address: assetOutAddress}},
+			{Asset: dia.Asset{Symbol: assetInSymbol, Address: assetInAddress, Decimals: uint8(assetInDecimalsInt)}},
+			{Asset: dia.Asset{Symbol: assetOutSymbol, Address: assetOutAddress, Decimals: uint8(assetOutDecimalsInt)}},
 		}
 
 		return pool, nil
