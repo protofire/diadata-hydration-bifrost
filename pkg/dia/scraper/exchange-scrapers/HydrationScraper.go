@@ -125,7 +125,9 @@ func (s *HydrationScraper) processEvents(events []*parser.Event, blockNumber uin
 			s.logger.Error("Failed to get pools from database")
 			continue
 		}
-		parsedEvent.ExtrinsicID = fmt.Sprintf("%d-%d", blockNumber, e.Phase.AsApplyExtrinsic)
+		if e.Phase.IsApplyExtrinsic {
+			parsedEvent.ExtrinsicID = fmt.Sprintf("%d-%d", blockNumber, e.Phase.AsApplyExtrinsic)
+		}
 
 		pool := s.filterPools(pools, parsedEvent)
 
