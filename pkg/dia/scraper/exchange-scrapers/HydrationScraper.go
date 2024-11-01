@@ -131,6 +131,8 @@ func (s *HydrationScraper) processEvents(events []*parser.Event, blockNumber uin
 
 		pool := s.filterPools(pools, parsedEvent)
 
+		pool := s.filterPools(pools, parsedEvent)
+
 		if len(pool.Assetvolumes) < 2 {
 			// look for pool address in other events
 			secundaryEvent := s.parseSecundaryEvent(events, parsedEvent, blockNumber)
